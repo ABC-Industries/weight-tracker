@@ -135,7 +135,7 @@ input[type=date].di:focus{border-color:var(--gold)}
         <div style="margin-top:14px">
           <div class="mr"><span class="mn">Protein</span><div class="mt"><div class="mf" id="protbar" style="width:0%"></div></div><span class="mv" id="protdis">—</span></div>
           <div class="mr"><span class="mn">Steps</span><div class="mt"><div class="mf" id="stepsbar" style="width:0%;background:#5B9BD5"></div></div><span class="mv" id="stepsdis">— / 12K</span></div>
-          <div class="mr" style="margin-bottom:0"><span class="mn">Workout</span><div style="flex:1"></div><span class="mv" id="wktdis">—</span></div>
+          <div class="mr" style="margin-bottom:0"><span class="mn">Active cals</span><div class="mt"><div class="mf" id="wktbar" style="width:0%;background:var(--amb)"></div></div><span class="mv" id="wktdis">—</span></div>
         </div>
       </div>
     </div>
@@ -225,7 +225,7 @@ input[type=date].di:focus{border-color:var(--gold)}
           <div style="margin-top:14px">
             <div class="mr"><span class="mn">Protein</span><div class="mt"><div class="mf" id="tprotbar" style="width:0%"></div></div><span class="mv" id="tprotdis">—</span></div>
             <div class="mr"><span class="mn">Steps</span><div class="mt"><div class="mf" id="tstepsbar" style="width:0%;background:#5B9BD5"></div></div><span class="mv" id="tstepsdis">— / 12K</span></div>
-            <div class="mr" style="margin-bottom:0"><span class="mn">Workout</span><div style="flex:1"></div><span class="mv" id="twktdis">—</span></div>
+            <div class="mr" style="margin-bottom:0"><span class="mn">Active cals</span><div class="mt"><div class="mf" id="twktbar" style="width:0%;background:var(--amb)"></div></div><span class="mv" id="twktdis">—</span></div>
           </div>
         </div>
       </div>
@@ -277,6 +277,7 @@ function pace(d){return parseFloat((SW-RATE*(d-1)).toFixed(1))}
 function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function stepsFrom(n){if(!n)return 0;const m=n.match(/(\d[\d,]+)\s*steps/i);return m?parseInt(m[1].replace(/,/g,'')):0}
 function burn(s){return Math.round(s*0.04)}
+function activeCalsFrom(n){if(!n)return 0;const m=n.match(/(\d+)\s*(?:active\s*)?(?:kcal|cal)/i);return m?parseInt(m[1]):0}
 async function sbGet(p){const r=await fetch(`${URL2}/rest/v1/${p}`,{headers:{'apikey':KEY,'Authorization':`Bearer ${KEY}`}});if(!r.ok)return[];return r.json()}
 function latestW(days){const w=days.filter(d=>d.weight);return w.length?w[w.length-1].weight:SW}
 function weeklyRate(days){const w=days.filter(d=>d.weight).slice(-7);if(w.length<2)return null;const sp=w[w.length-1].day_num-w[0].day_num;if(!sp)return null;return((w[0].weight-w[w.length-1].weight)/sp)*7}
@@ -306,11 +307,15 @@ function renderNutrition(day,meals){
   const re=document.getElementById('calrem');if(cals){re.textContent=rem>0?rem+' kcal remaining':Math.abs(rem)+' kcal over';re.style.color=rem>0?'var(--grn)':'var(--red)'}else re.textContent='';
   const de=document.getElementById('caldef');if(cals){de.textContent=def>0?'~'+def+' kcal deficit today':'~'+Math.abs(def)+' kcal surplus';de.style.color=def>0?'var(--grn)':'var(--red)'}else de.textContent='';
   const pb=document.getElementById('protbar');pb.style.width=Math.min(100,(prot/PROT_T)*100)+'%';pb.style.background=prot>=PROT_T?'var(--grn)':prot>=100?'var(--amb)':'var(--red)';
-  document.getElementById('protdis').textContent=prot?prot+'g / '+PROT_T+'g':'—';
+  document.getElementById('protdis').textContent=prot?(prot>=PROT_T?prot+'g ✓':prot+'g / '+PROT_T+'g'):'— / '+PROT_T+'g';
   const sk=steps>=1000?(steps/1000).toFixed(1)+'K':steps?steps.toString():'—';
   const sb=document.getElementById('stepsbar');sb.style.width=Math.min(100,(steps/STEPS_T)*100)+'%';sb.style.background=steps>=STEPS_T?'var(--grn)':steps>=8000?'var(--amb)':'var(--red)';
   document.getElementById('stepsdis').textContent=steps?(steps>=STEPS_T?sk+' ✓':sk+' / 12K'):'— / 12K';
-  const wkt=day&&day.workout;document.getElementById('wktbar').style.width=wkt?'100%':'0%';document.getElementById('wktdis').textContent=wkt||'—';
+  const wkt=day&&day.workout;
+  const acals=day?activeCalsFrom(day.workout_notes):0;
+  const acalPct=Math.min(100,(acals/400)*100);
+  const wb=document.getElementById('wktbar');wb.style.width=acalPct+'%';wb.style.background=acals>=400?'var(--grn)':acals>=200?'var(--amb)':'var(--amb)';
+  document.getElementById('wktdis').textContent=acals?(acals>=400?acals+' kcal ✓':acals+' / 400 kcal'):'— / 400 kcal';
   if(cals>0){document.getElementById('defrow').style.display='grid';document.getElementById('deaten').textContent=cals+' kcal';document.getElementById('deburned').textContent=b?'+'+b+' kcal':'—';document.getElementById('denet').textContent=def>0?def+' kcal':'0';document.getElementById('denet').style.color=def>0?'var(--grn)':'var(--red)'}else document.getElementById('defrow').style.display='none';
   if(cals>0||prot>0){document.getElementById('sumcard').style.display='block';genSummary(cals,prot,steps,b,def)}else document.getElementById('sumcard').style.display='none';
 }
@@ -360,12 +365,13 @@ async function renderToday(dateStr){
     const re=document.getElementById('tcalrem');if(cals){re.textContent=rem>0?rem+' kcal remaining':Math.abs(rem)+' kcal over';re.style.color=rem>0?'var(--grn)':'var(--red)'}else re.textContent='';
     const de=document.getElementById('tcaldef');if(cals){de.textContent=def>0?'~'+def+' kcal deficit':'~'+Math.abs(def)+' kcal surplus';de.style.color=def>0?'var(--grn)':'var(--red)'}else de.textContent='';
     const pb=document.getElementById('tprotbar');pb.style.width=Math.min(100,(prot/PROT_T)*100)+'%';pb.style.background=prot>=PROT_T?'var(--grn)':prot>=100?'var(--amb)':'var(--red)';
-    document.getElementById('tprotdis').textContent=prot?prot+'g / '+PROT_T+'g':'—';
+    document.getElementById('tprotdis').textContent=prot?(prot>=PROT_T?prot+'g ✓':prot+'g / '+PROT_T+'g'):'— / '+PROT_T+'g';
     const sk=steps>=1000?(steps/1000).toFixed(1)+'K':steps?steps.toString():'—';
     const sb=document.getElementById('tstepsbar');sb.style.width=Math.min(100,(steps/STEPS_T)*100)+'%';sb.style.background=steps>=STEPS_T?'var(--grn)':steps>=8000?'var(--amb)':'var(--red)';
     document.getElementById('tstepsdis').textContent=steps?(steps>=STEPS_T?sk+' ✓':sk+' / 12K'):'— / 12K';
-    document.getElementById('twktbar').style.width=wkt?'100%':'0%';
-    document.getElementById('twktdis').textContent=wkt||'—';
+    const tacals=day?activeCalsFrom(day.workout_notes):0;
+    const twb=document.getElementById('twktbar');twb.style.width=Math.min(100,(tacals/400)*100)+'%';twb.style.background=tacals>=400?'var(--grn)':'var(--amb)';
+    document.getElementById('twktdis').textContent=tacals?(tacals>=400?tacals+' kcal ✓':tacals+' / 400 kcal'):'— / 400 kcal';
     if(cals>0){
       document.getElementById('tdefrow').style.display='grid';
       document.getElementById('tdeaten').textContent=cals+' kcal';
