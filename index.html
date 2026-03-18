@@ -126,7 +126,7 @@ input[type=date].di:focus{border-color:var(--gold)}
           <span style="font-size:22px;font-weight:500;font-family:'Playfair Display',serif" id="caldis">—</span>
         </div>
         <div class="cbt"><div class="cbf" id="calbar" style="width:0%"></div></div>
-        <div class="cbl"><span>0</span><span>target: 2,200</span><span>3,000</span></div>
+        <div class="cbl"><span>0</span><span>2,200 kcal target</span></div>
         <div style="display:flex;justify-content:space-between;margin-top:8px;margin-bottom:16px">
           <span style="font-size:12px" id="calrem"></span>
           <span style="font-size:12px" id="caldef"></span>
@@ -216,7 +216,7 @@ input[type=date].di:focus{border-color:var(--gold)}
             <span style="font-size:22px;font-weight:500;font-family:'Playfair Display',serif" id="tcaldis">—</span>
           </div>
           <div class="cbt"><div class="cbf" id="tcalbar" style="width:0%"></div></div>
-          <div class="cbl"><span>0</span><span>target: 2,200</span><span>3,000</span></div>
+          <div class="cbl"><span>0</span><span>2,200 kcal target</span></div>
           <div style="display:flex;justify-content:space-between;margin-top:8px;margin-bottom:16px">
             <span style="font-size:12px" id="tcalrem"></span>
             <span style="font-size:12px" id="tcaldef"></span>
@@ -303,7 +303,7 @@ function drawChart(days){
 function renderNutrition(day,meals){
   const cals=day?day.cals:0,prot=day?day.protein:0,steps=day?stepsFrom(day.workout_notes):0,b=burn(steps),rem=CAL_T-cals,def=TDEE-cals-b;
   document.getElementById('caldis').textContent=cals?cals+' kcal':'—';
-  const cb=document.getElementById('calbar');cb.style.width=Math.min(100,(cals/3000)*100)+'%';cb.style.background=cals>2200?'var(--red)':cals>1800?'var(--grn)':'var(--amb)';
+  const cb=document.getElementById('calbar');cb.style.width=Math.min(100,(cals/CAL_T)*100)+'%';cb.style.background=cals>2200?'var(--red)':cals>1800?'var(--grn)':'var(--amb)';
   const re=document.getElementById('calrem');if(cals){re.textContent=rem>0?rem+' kcal remaining':Math.abs(rem)+' kcal over';re.style.color=rem>0?'var(--grn)':'var(--red)'}else re.textContent='';
   const de=document.getElementById('caldef');if(cals){de.textContent=def>0?'~'+def+' kcal deficit today':'~'+Math.abs(def)+' kcal surplus';de.style.color=def>0?'var(--grn)':'var(--red)'}else de.textContent='';
   const pb=document.getElementById('protbar');pb.style.width=Math.min(100,(prot/PROT_T)*100)+'%';pb.style.background=prot>=PROT_T?'var(--grn)':prot>=100?'var(--amb)':'var(--red)';
@@ -361,7 +361,7 @@ async function renderToday(dateStr){
   if(cals>0||prot>0){
     nutrEl.style.display='block';
     document.getElementById('tcaldis').textContent=cals?cals+' kcal':'—';
-    const cb=document.getElementById('tcalbar');cb.style.width=Math.min(100,(cals/3000)*100)+'%';cb.style.background=cals>2200?'var(--red)':cals>1800?'var(--grn)':'var(--amb)';
+    const cb=document.getElementById('tcalbar');cb.style.width=Math.min(100,(cals/CAL_T)*100)+'%';cb.style.background=cals>2200?'var(--red)':cals>1800?'var(--grn)':'var(--amb)';
     const re=document.getElementById('tcalrem');if(cals){re.textContent=rem>0?rem+' kcal remaining':Math.abs(rem)+' kcal over';re.style.color=rem>0?'var(--grn)':'var(--red)'}else re.textContent='';
     const de=document.getElementById('tcaldef');if(cals){de.textContent=def>0?'~'+def+' kcal deficit':'~'+Math.abs(def)+' kcal surplus';de.style.color=def>0?'var(--grn)':'var(--red)'}else de.textContent='';
     const pb=document.getElementById('tprotbar');pb.style.width=Math.min(100,(prot/PROT_T)*100)+'%';pb.style.background=prot>=PROT_T?'var(--grn)':prot>=100?'var(--amb)':'var(--red)';
