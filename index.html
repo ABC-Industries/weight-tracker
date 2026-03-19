@@ -272,7 +272,7 @@ const SW=175,GW=155,START=new Date('2026-03-17T00:00:00'),GOAL=new Date('2026-05
 const TOTAL=Math.round((GOAL-START)/86400000),RATE=(SW-GW)/TOTAL;
 
 function dayNum(){return Math.max(1,Math.floor((Date.now()-START.getTime())/86400000)+1)}
-function daysLeft(){return Math.max(0,Math.round((GOAL-new Date())/86400000))}
+function daysLeft(){const now=new Date();const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());const goal=new Date(2026,4,20);return Math.max(0,Math.round((goal-today)/86400000))}
 function pace(d){return parseFloat((SW-RATE*(d-1)).toFixed(1))}
 function todayStr(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function stepsFrom(n){if(!n)return 0;const m=n.match(/(\d[\d,]+)\s*steps/i);return m?parseInt(m[1].replace(/,/g,'')):0}
