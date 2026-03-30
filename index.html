@@ -426,3 +426,58 @@ setInterval(load,30000);
 </script>
 </body>
 </html>
+<!-- MOBILE PATCH - appended -->
+<style>
+@media (max-width: 768px) {
+  .sidebar{width:100%;height:56px;top:auto;bottom:0;flex-direction:row;padding:0;border-right:none;border-top:1px solid var(--border);z-index:200}
+  .logo{display:none}
+  .nav{display:flex;flex-direction:row;padding:0;flex:1;justify-content:center}
+  .nav-item{flex-direction:column;gap:4px;padding:8px 24px;font-size:10px;letter-spacing:0.5px;border-left:none;border-top:2px solid transparent;justify-content:center;align-items:center}
+  .nav-item.active{border-left:none;border-top-color:var(--lime);background:none}
+  .nav-item svg{width:18px;height:18px}
+  .sync-btn{display:none}
+  .main{margin-left:0;margin-bottom:56px}
+  .page{padding:16px;gap:14px}
+  .page-header{flex-wrap:wrap;gap:10px}
+  .page-title{font-size:17px}
+  .grid3{grid-template-columns:repeat(2,1fr);gap:12px}
+  .grid3 > .card:last-child{grid-column:span 2}
+  .card{padding:16px;border-radius:12px}
+  .card-title{font-size:11px;margin-bottom:8px}
+  .big-num{font-size:28px}
+  .big-num .unit{font-size:12px}
+  .donut-row{gap:12px}
+  .donut{width:72px;height:72px}
+  .donut svg{width:72px;height:72px}
+  .donut-label{font-size:12px}
+  .macro-list{gap:6px}
+  .mval{font-size:9px;width:52px}
+  .cal-bottom{font-size:11px}
+  .ring{width:80px;height:80px}
+  .ring svg{width:80px;height:80px}
+  .ring-num{font-size:17px}
+  .rstat .rv{font-size:11px}
+  .bars{height:44px;gap:3px}
+  .bdate{font-size:7px}
+  .wlog{gap:6px}
+  .winput{font-size:12px;padding:7px 10px}
+  .logbtn{padding:7px 12px;font-size:11px}
+  .date-nav{gap:8px}
+  .date-lbl{font-size:12px;min-width:55px}
+  .dnb{width:28px;height:28px;font-size:16px}
+  /* Daily log table scroll */
+  #tbl{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{min-width:500px}
+  th{font-size:9px;padding:0 8px 8px}
+  td{font-size:11px;padding:9px 8px}
+  .log-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .log-tabs::-webkit-scrollbar{display:none}
+  .ltab{padding:8px 12px;font-size:11px;white-space:nowrap}
+}
+@media (max-width: 400px) {
+  .grid3{grid-template-columns:1fr;gap:10px}
+  .grid3 > .card:last-child{grid-column:span 1}
+  .card{padding:14px}
+  .big-num{font-size:24px}
+}
+</style>
