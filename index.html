@@ -176,12 +176,13 @@ tr:hover td{background:rgba(255,255,255,0.02)}
       <!-- GOAL -->
       <div class="card">
         <div class="card-title">Goal Progress</div>
-        <div class="big-num" id="days-left" style="color:var(--lime)">—<span class="unit" style="color:var(--text3)">/64 days</span></div>
+        <div style="font-size:10px;color:var(--text3);font-family:'Space Mono',monospace;margin-bottom:6px">177 → 155 lbs · May 20</div>
+        <div class="big-num" id="days-left" style="color:var(--lime)">—<span class="unit" style="color:var(--text3)">/52 days</span></div>
         <div class="card-sub">remaining to May 20</div>
         <div class="prog-bar"><div class="prog-fill" id="gbar" style="width:0%"></div></div>
         <div style="display:flex;justify-content:space-between;margin-top:5px">
           <span style="font-size:11px;color:var(--text3)" id="lbl-lost">0 lbs lost</span>
-          <span style="font-size:11px;color:var(--lime)" id="lbl-weight">175 lbs</span>
+          <span style="font-size:11px;color:var(--lime)" id="lbl-weight">177 lbs</span>
           <span style="font-size:11px;color:var(--text3)" id="lbl-rem">20 to go</span>
         </div>
       </div>
@@ -227,7 +228,7 @@ tr:hover td{background:rgba(255,255,255,0.02)}
         </div>
         <div class="cdates" id="weight-dates"></div>
         <div class="wlog">
-          <input type="number" step="0.1" class="winput" id="winput" placeholder="175.0">
+          <input type="number" step="0.1" class="winput" id="winput" placeholder="177.0">
           <span class="wunit">lbs</span>
           <button class="logbtn" onclick="logW()">Log</button>
         </div>
@@ -255,7 +256,7 @@ const KEY='sb_publishable_yF1a3hKenbjdXBsvUzjM6Q_0UZzpYKT';
 const START=new Date('2026-03-29T00:00:00');
 const GOAL=new Date('2026-05-20T00:00:00');
 const TOTAL=Math.round((GOAL-START)/86400000);
-const SW=175,GW=155;
+const SW=177,GW=155;
 let days=[];
 let vdate=tod();
 
@@ -293,8 +294,8 @@ function renderDash(ds){
   const lw=wdays.length?wdays[wdays.length-1].weight:SW;
   const lost=parseFloat((SW-lw).toFixed(1));
   const rem=parseFloat((lw-GW).toFixed(1));
-  document.getElementById('days-left').innerHTML=`${dl()}<span class="unit" style="color:var(--text3)">/64 days</span>`;
-  document.getElementById('gbar').style.width=Math.min(100,(lost/20)*100)+'%';
+  document.getElementById('days-left').innerHTML=`${dl()}<span class="unit" style="color:var(--text3)">/52 days</span>`;
+  document.getElementById('gbar').style.width=Math.min(100,(lost/22)*100)+'%';
   document.getElementById('lbl-lost').textContent=lost>0?lost+' lbs lost':'0 lbs lost';
   document.getElementById('lbl-weight').textContent=lw+' lbs';
   document.getElementById('lbl-rem').textContent=rem+' lbs to go';
